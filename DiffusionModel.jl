@@ -41,13 +41,12 @@ module DiffusionModel
 		model.nodeStates = nodeStates
 	end
 
-	function set_initial_conditions!(model::MultiDiffusionModel, seeds::Tuple{Set{Int}, Set{Int}})
+	function set_initial_conditions!(model::MultiDiffusionModel, seeds::Vector{Set})
 		nodeStates = Dict{Int, UInt}()
 		model.blockedDict =  Dict{Int, Vector}()
 		for i=1:length(seeds)
 			for seed in seeds[i]
 				nodeStates[seed][i] = 1
-				
 			end
 		end
 		model.t = UInt32(0)
@@ -106,7 +105,7 @@ module DiffusionModel
 		state_summary = zeros(Int, num_infections + 1)
 		for u in vertices(model.network)
 			for i=1:num_infections
-				state_summary[num_infections] += model.nodeStates[u][num_infections]
+				state_summary[num_infections + 1] += model.nodeStates[u][num_infections]
 			end
 		end
 		state_summary[1] = nv(model.network) - sum(state_summary[2:length(state_summary)])
